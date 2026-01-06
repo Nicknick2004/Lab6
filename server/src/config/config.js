@@ -1,14 +1,13 @@
-// src/config/config.js
 module.exports = {
-    port: process.env.PORT || 8081,
+    port: 8081,
     db: {
-        database: process.env.DB_NAME || 'coffeeshop-db',
+        database: process.env.DB_NAME || 'nvwebblog-db',
         user: process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || 'root',
         options: {
-            dialect: 'sqlite',
-            storage: './coffeeshop-db.sqlite',
-            logging: false
+            dialect: process.env.DIALECT || 'sqlite',
+            storage: './nvwebblog-db.sqlite' //ชื่อไฟล์ฐานข้อมูลที่จะถูกสร้างขึ้น
         }
     }
 }
+
