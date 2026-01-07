@@ -1,25 +1,74 @@
 const express = require('express')
-const { sequelize } = require('./models') // เรียกใช้ sequelize object ที่เราสร้างไว้
-const config = require('./config/config')
-
 const app = express()
+const port = 8081
 
-// --- Middleware Section ---
-app.use(express.json()) 
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
-// --- Routes Section ---
-require('./routes')(app)
+// 🔹 ทดสอบว่า server ทำงาน
+app.get('/', (req, res) => {
+  res.send('CoffeeShop API is running')
+})
 
-// --- Server Startup Section ---
-const port = config.port
+// 🔹 mock data (แทน database ชั่วคราว)
+let coffees = [
+  {
+    id: 1,
+    name: 'Americano',
+    price: 50,
+    type: 'iced',
+    description: 'Dark and Strong (iced)'
+  }
+]
 
-// สั่ง Sync ฐานข้อมูลก่อน แล้วค่อยเริ่ม Server
-// force: false หมายถึง ถ้ามีตารางอยู่แล้ว ไม่ต้องลบสร้างใหม่ (รักษาข้อมูลเดิมไว้)
-sequelize.sync({ force: false })
-    .then(() => {
-        app.listen(port, function () {
-            console.log('Server running on port ' + port)
-        })
-    })
+// 🔹 GET ทั้งหมด
+app.get('/api/coffees', (req, res) => {
+  res.json(coffees)
+})
 
+// 🔹 GET ตาม id
+app.get('/api/coffee/:id', (req, res) => {
+  const id = parseInt(req.params.id)
+  const coffee = coffees.find(c => c.id === id)
+
+  if (!coffee) {
+    return res.status(404).json({ message: 'Coffee not found' })
+  }
+
+  res.json(coffee)
+})
+
+// 🔹 POST เพิ่มกาแฟ
+app.post('/api/coffees', (req, res) => {
+  const newCoffee = {
+    id: coffees.length + 1,
+    ...req.body
+  }
+
+  coffees.push(newCoffee)
+  res.status(201).json(newCoffee)
+})
+
+// 🔹 PUT แก้ไขกาแฟ
+app.put('/api/coffee/:id', (req, res) => {
+  const id = parseInt(req.params.id)
+  const index = coffees.findIndex(c => c.id === id)
+
+  if (index === -1) {
+    return res.status(404).json({ message: 'Coffee not found' })
+  }
+
+  coffees[index] = { id, ...req.body }
+  res.json(coffees[index])
+})
+
+// 🔹 DELETE ลบกาแฟ
+app.delete('/api/coffee/:id', (req, res) => {
+  const id = parseInt(req.params.id)
+  coffees = coffees.filter(c => c.id !== id)
+
+  res.json({ message: 'Coffee deleted' })
+})
+
+app.listen(port, () => {
+  console.log(`CoffeeShop Server running on port ${port}`)
+})

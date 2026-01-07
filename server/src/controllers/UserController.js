@@ -20,7 +20,7 @@ module.exports = {
             res.send(user.toJSON())
         } catch (err) {
             res.status(500).send({
-                error: 'Create user incorrect'
+         error: 'Create user incorrect'z
             })
         }
     },
@@ -64,8 +64,7 @@ module.exports = {
             })
         }
     },
-
-    // get user by id
+ // get user by id
     async show (req, res) {
         try {
             const user = await User.findByPk(req.params.userId)
@@ -77,4 +76,3 @@ module.exports = {
         }
     }
 }
-

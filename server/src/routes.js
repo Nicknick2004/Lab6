@@ -1,11 +1,10 @@
 // src/routes.js
 const CoffeeController = require('./controllers/CoffeeController')
 
-module.exports = (app) => {
-    // เส้นทางสำหรับจัดการเมนูกาแฟ (Coffee Routes)
-    app.get('/coffees', CoffeeController.index)      // ดูเมนูทั้งหมด
-    app.post('/coffee', CoffeeController.create)     // เพิ่มเมนู
-    app.put('/coffee/:coffeeId', CoffeeController.put) // แก้ไขเมนู
-    app.delete('/coffee/:coffeeId', CoffeeController.remove) // ลบเมนู
-    app.get('/coffee/:coffeeId', CoffeeController.show) // ดูเมนูรายตัว
-}   
+module.exports = (app, prefix = '') => {
+  app.get(`${prefix}/coffees`, CoffeeController.index)
+  app.post(`${prefix}/coffee`, CoffeeController.create)
+  app.put(`${prefix}/coffee/:coffeeId`, CoffeeController.put)
+  app.delete(`${prefix}/coffee/:coffeeId`, CoffeeController.remove)
+  app.get(`${prefix}/coffee/:coffeeId`, CoffeeController.show)
+}
